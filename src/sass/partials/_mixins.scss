@@ -1,0 +1,92 @@
+// mixins
+
+@mixin size($width: auto, $height: $width) {
+  width: $width;
+  height: $height;
+}
+@mixin max-size($max-width: auto, $max-height: $max-width) {
+  max-width: $max-width;
+  max-height: $max-height;
+}
+@mixin bg-color($color: #fff, $opacity: false) {
+  background: $color;
+  @if($opacity) {
+    background: rgba($color, $opacity);
+  }
+}
+@mixin placeholder-color($color: inherit) {
+  &::-webkit-input-placeholder {color: $color;}
+  &::-moz-placeholder          {color: $color;}/* Firefox 19+ */
+  &:-moz-placeholder           {color: $color;}/* Firefox 18- */
+  &:-ms-input-placeholder      {color: $color;}
+}
+
+@mixin clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    content: '';
+    display: table;
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+@mixin positionAbsoluteFull() {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+@mixin positionCenter($position: relative) {
+  position: $position;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+@mixin positionCenterY($position: relative) {
+  position: $position;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+@mixin positionCenterX($position: relative) {
+  position: $position;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+@mixin lg {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}
+@mixin md {
+  @media (max-width: 1199px) and (min-width: 992px) {
+    @content;
+  }
+}
+@mixin sm {
+  @media (max-width: 991px) and (min-width: 768px) {
+    @content;
+  }
+}
+@mixin xs {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
