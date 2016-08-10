@@ -24,6 +24,7 @@
     "autoprefixer-loader": "^3.1.0",
     "browser-sync": "^2.9.3",
     "bs-html-injector": "^3.0.0",
+    "concurrently": "^2.2.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-closurecompiler": "^0.1.0",
@@ -45,7 +46,9 @@
     "webpack-stream": "^3.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"npm run gulp\" \"npm run webpack\"",
+    "gulp": "gulp",
+    "webpack": "webpack -w"
   },
   "author": "Vladislav WebDev",
   "license": "ISC"
