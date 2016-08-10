@@ -46,7 +46,7 @@
     "webpack-stream": "^3.1.0"
   },
   "scripts": {
-    "start": "concurrently \"npm run gulp\" \"npm run webpack\"",
+    "start": "concurrently --kill-others \"npm run gulp\" \"npm run webpack\"",
     "gulp": "gulp",
     "webpack": "webpack -w"
   },
