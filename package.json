@@ -28,12 +28,8 @@
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-closurecompiler": "^0.1.0",
-    "gulp-concat": "^2.6.0",
     "gulp-minify-css": "^1.2.2",
     "gulp-sass": "^2.1.1",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-tslint": "^3.2.0",
-    "gulp-typescript": "^2.8.2",
     "gulp-watch": "^4.3.5",
     "node-sass": "^3.4.2",
     "raw-loader": "^0.5.1",
@@ -46,9 +42,8 @@
     "webpack-stream": "^3.1.0"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"npm run gulp\" \"npm run webpack\"",
-    "gulp": "gulp",
-    "webpack": "webpack -w"
+    "start": "concurrently --kill-others \"npm run gulp\"",
+    "gulp": "gulp"
   },
   "author": "Vladislav WebDev",
   "license": "ISC"

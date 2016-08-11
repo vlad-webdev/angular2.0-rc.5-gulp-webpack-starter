@@ -3,14 +3,9 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var minifyCSS = require('gulp-minify-css');
-var concat = require('gulp-concat');
 var watch = require('gulp-watch');
 var browserSync = require('browser-sync');
 var htmlInjector = require("bs-html-injector");
-var tslint = require('gulp-tslint');
-var sourcemaps = require('gulp-sourcemaps');
-var tsc = require('gulp-typescript');
-var tsconfig = tsc.createProject('tsconfig.json');
 var webpack = require('webpack-stream');
 var gulpCC = require("gulp-closurecompiler");
 
@@ -27,6 +22,7 @@ var config = {
   angularSassFiles: './src/app/**/*.scss',
   jsFilesPath: './js/',
   jsMainFileName: 'main.js',
+  jsMainFileNameMin: 'main.min.js',
   sassFiles: './src/sass/**/*.scss',
   cssFilesPath: './css/',
   cssMainFileName: 'style.css',
@@ -42,16 +38,6 @@ config.browserSyncInjectHtmlFiles = [
 
 // watch
 gulp.task('watch', function() {
-  //watch(config.tsFiles, function() {
-  //  gulp.start(['ts-lint', 'compile-ts']);
-  //});
-  //watch(config.jsFiles, function() {
-  //  gulp.start('js-concat');
-  //});
-
-  // watch([config.tsFiles, config.angularHtmlFiles, config.angularSassFiles], function() {
-  //   gulp.start('webpack');
-  // });
   watch(config.sassFiles, function() {
     gulp.start('sass');
   });
@@ -60,18 +46,11 @@ gulp.task('watch', function() {
   });
 });
 
-//// js concat
-//gulp.task('js-concat', ['compile-ts'], function() {
-//  gulp.src([config.jsFiles])
-//    .pipe(concat(config.jsMainFileName))
-//    .pipe(gulp.dest(config.jsFilesPath));
-//});
-
 // sass
 gulp.task('sass', function () {
   gulp.src(config.sassFiles)
     .pipe(sass.sync().on('error', sass.logError))
-    .pipe(sass({outputStyle: 'expanded'}))
+    .pipe(sass({outputStyle: 'compressed'}))
     .pipe(gulp.dest(config.cssFilesPath));
 });
 
@@ -85,57 +64,36 @@ gulp.task('autoprefixer', function () {
     .pipe(gulp.dest(config.cssFilesPath));
 });
 
-//// ts-lint
-//gulp.task('ts-lint', function() {
-//  return gulp.src(config.tsFiles)
-//    .pipe(tslint())
-//    .pipe(tslint.report('prose', {
-//      emitError: false
-//    }))
-//})
-//
-//// compile-ts
-//gulp.task('compile-ts', function() {
-//  var tsResult = gulp
-//    .src([config.tsFiles])
-//    //.pipe(sourcemaps.init())
-//    .pipe(tsc(tsconfig));
-//
-//  return tsResult.js
-//    //.pipe(sourcemaps.write('.'))
-//    .pipe(gulp.dest(config.tsFilesPath));
-//});
-
 gulp.task('webpack', function() {
   webpack({
-      entry: config.tsFilesPath + config.tsEntryFileName,
-      output: {
-        filename: config.jsMainFileName,
-      },
-      resolve: {
-        modulesDirectories: ['node_modules'],
-        root: config.projectFilesRoot,
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
-      },
-      module: {
-        preLoaders: [
-          { test: /\.ts$/, loader: 'tslint' },
-        ],
-        loaders: [
-          { test: /\.html$/, loaders: ["raw"] },
-          { test: /\.scss$/, loaders: ["raw", "sass", 'autoprefixer?{browsers:["> 0%"]}'] },
-          { test: /\.ts$/, loader: 'ts' },
-        ],
-      },
-      sassLoader: {
-        outputStyle: 'compressed'
-      },
-      tslint: {
-        emitErrors: true,
-        failOnHint: true,
-      }
-    })
-    .pipe(gulp.dest(config.jsFilesPath));
+    watch: true,
+    entry: {
+      [config.tsFilesPath + config.tsEntryFileName]: config.tsFilesPath + config.tsEntryFileName,
+      [config.angularHtmlFiles]: config.tsFilesPath + config.tsEntryFileName,
+      [config.angularSassFiles]: config.tsFilesPath + config.tsEntryFileName,
+    },
+    output: {
+      filename: config.jsMainFileName,
+    },
+    resolve: {
+      modulesDirectories: ['node_modules'],
+      root: config.projectFilesRoot,
+      extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
+    },
+    module: {
+      preLoaders: [],
+      loaders: [
+        { test: /\.html$/, loaders: ["raw"] },
+        { test: /\.scss$/, loaders: ["raw", "sass", 'autoprefixer?{browsers:["> 0%"]}'] },
+        { test: /\.ts$/, loader: 'ts' },
+      ],
+      postLoaders: []
+    },
+    sassLoader: {
+      outputStyle: 'compressed'
+    }
+  })
+  .pipe(gulp.dest(config.jsFilesPath));
 });
 
 // js closure compiler
@@ -144,20 +102,21 @@ gulp.task('min', function() {
   gulp.src(config.jsFilesPath + config.jsMainFileName)
     .pipe(gulpCC(
       {
-        fileName: config.jsMainFileName
+        fileName: config.jsMainFileNameMin
       },
       {
+        // compilation_level: 'SIMPLE_OPTIMIZATIONS',
         language_in: 'ECMASCRIPT5_STRICT',
         language_out: 'ECMASCRIPT5'
       }))
     .pipe(gulp.dest(config.jsFilesPath))
-  // css minify
-  gulp.src(config.cssFilesPath + config.cssMainFileName)
-    .pipe(minifyCSS({keepBreaks:false}))
-    .pipe(gulp.dest(config.cssFilesPath));
+  // // css minify
+  // gulp.src(config.cssFilesPath + config.cssMainFileName)
+  //   .pipe(minifyCSS({keepBreaks:false}))
+  //   .pipe(gulp.dest(config.cssFilesPath));
 });
 
-gulp.task('default', [/*'webpack', */'sass', 'watch'], function() {
+gulp.task('default', ['webpack', 'sass', 'watch'], function() {
 
   browserSync.use(htmlInjector, {
     files: config.browserSyncInjectHtmlFiles
