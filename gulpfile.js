@@ -16,7 +16,7 @@ var gulpCC = require("gulp-closurecompiler");
 
 
 var config = {
-  siteUrl: "http://angular-2.0-rc.1.app/",
+  siteUrl: "http://angular2.0-rc.5-gulp-webpack-starter/",
   port: 9000,
   projectFilesRoot: './src',
   tsFiles: './src/app/**/*.ts',
