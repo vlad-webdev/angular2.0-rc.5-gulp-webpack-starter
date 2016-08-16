@@ -116,26 +116,36 @@ gulp.task('min', function() {
   //   .pipe(gulp.dest(config.cssFilesPath));
 });
 
+var browserSyncOptions = {
+  // "watchOptions": {
+  //     usePolling: true
+  // },
+  open: false,
+  // reloadOnRestart: true,
+  proxy: {
+    target: config.siteUrl,
+    // ws: true
+  },
+  port: config.port,
+  files: config.browserSyncWatchFiles,
+  injectChanges: true,
+  logFileChanges: false,
+  logLevel: 'silent',
+  notify: false,
+  ghost: false,
+  reloadDelay: 0
+}
 gulp.task('default', ['webpack', 'sass', 'watch'], function() {
 
   browserSync.use(htmlInjector, {
     files: config.browserSyncInjectHtmlFiles
   });
-  browserSync({
-    open: false,
-    // reloadOnRestart: true,
-    proxy: {
-      target: config.siteUrl,
-      // ws: true
-    },
-    port: config.port,
-    files: config.browserSyncWatchFiles,
-    injectChanges: true,
-    logFileChanges: false,
-    logLevel: 'silent',
-    notify: false,
-    ghost: false,
-    reloadDelay: 0
-  });
+
+  browserSync(browserSyncOptions);
 
 });
+
+// для возможности синхронизации с удаленным сервером:
+// npm i -g browser-sync
+// browser-sync start --config gulpfile.js
+module.exports = browserSyncOptions;
