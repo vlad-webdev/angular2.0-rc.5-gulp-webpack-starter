@@ -117,9 +117,9 @@ gulp.task('min', function() {
 });
 
 var browserSyncOptions = {
-  // "watchOptions": {
-  //     usePolling: true
-  // },
+  "watchOptions": {
+      usePolling: true
+  },
   open: false,
   // reloadOnRestart: true,
   proxy: {
